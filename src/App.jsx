@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from "react";
-
+import Avatar from "react-avatar-edit";
 import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
   const [fileText, setFileText] = useState("");
+  const [preview, setPreview] = useState(null);
+  function onClose() {
+    setPreview(null);
+  }
+  function onCrop(previous) {
+    console.log("🚀 ~ file: App.jsx:13 ~ onCrop ~ previous:", previous)
+    
+    setPreview(previous);
+  }
+  function onBeforeFileLoad(elem) {
+    if (elem.target.files[0].size > 1303476) {
+      alert("File is too big!");
+      elem.target.value = "";
+    }
+  }
   const fileHandler = async (e) => {
     const file = e.target.files[0];
     console.log(e.target.files[0]);
@@ -40,7 +55,20 @@ function App() {
             cols="33"
           ></textarea>
         </div>
-        {fileText && <img src={fileText} height="300px" width="300px" />}
+        {fileText && (
+          <img src={fileText} width={400} height={400} />
+        )}
+         
+          <Avatar
+            src={null}
+            width={300}
+            height={300}
+            onCrop={onCrop}
+            onClose={onClose}
+            onBeforeFileLoad={onBeforeFileLoad}
+          />
+
+        {preview && <img src={preview} alt="Preview" />}
       </div>
     </div>
   );
